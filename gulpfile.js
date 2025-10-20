@@ -1,6 +1,13 @@
     const gulp = require('gulp');
     const sass = require('gulp-sass')(require('sass'));
     const imagemin = require('gulp-imagemin');
+    const uglify = require ('gulp-uglify');
+
+    function scripts () {
+        return gulp.src('./src/scripts/*.js')
+        .pipe(uglify())
+        .pipe(gulp.dest('.dist/js'))
+    }
     
     function styles () {
     return gulp.src('./src/styles/*.scss')
@@ -8,9 +15,6 @@
         .pipe(gulp.dest('./dist/css'));
     }
 
-    function watch() {
-    gulp.watch('./src/styles/**/*.scss', styles);
-}
 
     function images () {
     return gulp.src('./src/images/**/*')
@@ -18,6 +22,10 @@
         .pipe(gulp.dest('./dist/images'));
     }
 
-    exports.default = gulp.parallel(styles, images);
-    exports.watch = watch;
+    exports.default = gulp.parallel(styles, images, scripts);
+
+    exports.watch = function() {
+        gulp.watch('./src/style/*.scss', gulp.parallel(styles))
+        gulp.watch('./src/style/*.js', gulp.parallel(scripts));
+    }
 
